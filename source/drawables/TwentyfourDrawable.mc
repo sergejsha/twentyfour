@@ -4,7 +4,7 @@ using Toybox.Graphics;
 class TwentyfourDrawable extends WatchUi.Drawable {
 
 	private var iconsFont;
-	private var model;
+	private var viewModel;
 	private var cx, cy, radius;
 
     function initialize(params) {
@@ -12,24 +12,22 @@ class TwentyfourDrawable extends WatchUi.Drawable {
         iconsFont = WatchUi.loadResource(Rez.Fonts.IconsFont);
     }
 
-	function onLayout(dc, model) {
-		self.model = model;
+	function onLayout(dc, viewModel) {
+		self.viewModel = viewModel;
 		self.cx = dc.getWidth() / 2.0;
 		self.cy = dc.getHeight() / 2.0;
 		self.radius = (dc.getWidth() - ARC_WIDTH) / 2.0;
 	}
 
 	function draw(dc) {
-		if (model.events == null) {
-			return;
-		}
-	
-		var size = model.events.size();
+		var events = viewModel.events;
+		var size = events.size();
+		
 		for (var i = 0; i < size; i++) {
-			var start = model.events.get(i);
-			var end = model.events.get((i + 1) % size);
-			var startDegree = timeToDegrees(start.getTime());
-			var endDegree = timeToDegrees(end.getTime());
+			var start = events.get(i);
+			var end = events.get((i + 1) % size);
+			var startDegree = timeToDegrees(start.getMomentInfo());
+			var endDegree = timeToDegrees(end.getMomentInfo());
 			
 			if ((startDegree - endDegree).abs() > MAX_UNDRAWABLE_ARC_DEGREE) {
 				drawArc(dc, getColor(start), startDegree, endDegree);
@@ -40,7 +38,7 @@ class TwentyfourDrawable extends WatchUi.Drawable {
 		}
 		
 		for (var i = 0; i < size; i++) {
-			drawEvent(dc, model.events.get(i));
+			drawEvent(dc, events.get(i));
 		}
 	}
 	
@@ -57,8 +55,8 @@ class TwentyfourDrawable extends WatchUi.Drawable {
 	}
 	
 	private function drawEvent(dc, event) {
-		var degree = timeToDegrees(event.getTime());
-		if (event.getType() == Event.TYPE_NOW) {
+		var degree = timeToDegrees(event.getMomentInfo());
+		if (event.getType() == Ring.Event.TYPE_NOW) {
 			drawDotWithBorder(dc, degree, ARC_HALF_WIDTH);
 		} else {
 			drawHatchWithBorder(dc, degree, HATCH_WIDTH, HATCH_HEIGHT);
@@ -97,11 +95,11 @@ class TwentyfourDrawable extends WatchUi.Drawable {
 		var y2 = cy + r2 * sin;
 		
 		dc.setPenWidth(width + 4);
-		dc.setColor(model.colorBackground, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(viewModel.colorBackground, Graphics.COLOR_TRANSPARENT);
 		dc.drawLine(x1, y1, x2, y2);
 
 		dc.setPenWidth(width);
-		dc.setColor(model.colorForeground, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(viewModel.colorForeground, Graphics.COLOR_TRANSPARENT);
 		dc.drawLine(x1, y1, x2, y2);
 	}
 	
@@ -113,19 +111,19 @@ class TwentyfourDrawable extends WatchUi.Drawable {
 		var x = cx + self.radius * cos;
 		var y = cy + self.radius * sin;
 
-		dc.setColor(model.colorBackground, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(viewModel.colorBackground, Graphics.COLOR_TRANSPARENT);
 		dc.fillCircle(x, y, radius + 3);
 		
-		dc.setColor(model.colorForeground, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(viewModel.colorForeground, Graphics.COLOR_TRANSPARENT);
 		dc.fillCircle(x, y, radius);
 	}
 
 	private static function getColor(event) {
-		var arc = event.getArc(); 
+		var arc = event.getArcType(); 
 		switch (arc) {
-			case Event.ARC_PASSED: return Graphics.COLOR_DK_GRAY;
-			case Event.ARC_DAY: return Graphics.COLOR_ORANGE;
-			case Event.ARC_NIGHT: return Graphics.COLOR_DK_BLUE;
+			case Ring.Event.ARC_PASSED: return Graphics.COLOR_DK_GRAY;
+			case Ring.Event.ARC_DAY: return Graphics.COLOR_ORANGE;
+			case Ring.Event.ARC_NIGHT: return Graphics.COLOR_DK_BLUE;
 			default: return Graphics.COLOR_LT_GRAY;
 		}
 	}
@@ -133,9 +131,9 @@ class TwentyfourDrawable extends WatchUi.Drawable {
 	private static function getEventIcon(event) {
 		var arc = event.getType(); 
 		switch (arc) {
-			case Event.TYPE_SUNRISE: return "B";
-			case Event.TYPE_SOLAR_NOON: return "A";
-			case Event.TYPE_SUNSET: return "C";
+			case Ring.Event.TYPE_SUNRISE: return "B";
+			case Ring.Event.TYPE_SOLAR_NOON: return "A";
+			case Ring.Event.TYPE_SUNSET: return "C";
 			default: return null;
 		}
 	}

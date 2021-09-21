@@ -1,1 +1,3 @@
 project.manifest = manifest.xml
+
+base.sourcePath = source/*.mc;source/model/*.mc;source/utils/*.mc;source/drawables/*.mc

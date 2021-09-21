@@ -5,10 +5,10 @@ using Toybox.Application;
 
 class TwentyfourView extends WatchUi.WatchFace {
 
-	private var model;
+	private var viewModel;
 
-    function initialize(model) {
-	    self.model = model;
+    function initialize(viewModel) {
+	    self.viewModel = viewModel;
         WatchFace.initialize();
     }
 
@@ -23,7 +23,7 @@ class TwentyfourView extends WatchUi.WatchFace {
 		for (var i = 0; i < size; i++) {
 			var drawable = layout[i];
 			if (drawable has :onLayout) {
-				drawable.onLayout(dc, model);
+				drawable.onLayout(dc, viewModel);
 			}
 		}
 	}
@@ -36,7 +36,7 @@ class TwentyfourView extends WatchUi.WatchFace {
 
     // Update the view
     function onUpdate(dc) {
-    	model.onUpdate();
+    	viewModel.onUpdate();
     	View.onUpdate(dc);
     }
 

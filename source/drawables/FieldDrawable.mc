@@ -6,7 +6,7 @@ class FieldDrawable extends WatchUi.Drawable {
 	private var compartment;
 	private var type;
 
-	private var model;
+	private var viewModel;
 	private var x, y;
 	private var justification;
 
@@ -16,8 +16,8 @@ class FieldDrawable extends WatchUi.Drawable {
         type = params[:type];
     }
 
-	function onLayout(dc, model) {
-		self.model = model;
+	function onLayout(dc, viewModel) {
+		self.viewModel = viewModel;
 
 		var cx = dc.getWidth() / 2;
 		var cy = dc.getHeight() / 2;
@@ -66,12 +66,12 @@ class FieldDrawable extends WatchUi.Drawable {
 			return;
 		}
 		
-		var field = model.fields[type];
+		var field = viewModel.fields[type];
 		if (field == null) {
 			return;
 		}
 		
-		dc.setColor(model.colorForeground, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(viewModel.colorForeground, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(x, y, Graphics.FONT_SMALL, field.getValue(), justification | Graphics.TEXT_JUSTIFY_VCENTER);
 	}
 	

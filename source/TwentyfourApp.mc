@@ -3,12 +3,12 @@ using Toybox.WatchUi;
 
 class TwentyfourApp extends Application.AppBase {
 
-	private var model;
+	private var viewModel;
 
     function initialize() {
         AppBase.initialize();
-        model = new TwentyfourModel();
-        model.updateProperties(self);
+        viewModel = new TwentyfourViewModel();
+        viewModel.updateProperties(self);
     }
 
     // onStart() is called on application start up
@@ -19,12 +19,12 @@ class TwentyfourApp extends Application.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() {
-        return [ new TwentyfourView(model) ];
+        return [ new TwentyfourView(viewModel) ];
     }
 
     // New app settings have been received so trigger a UI update
     function onSettingsChanged() {
-    	model.updateProperties(self);
+    	viewModel.updateProperties(self);
         WatchUi.requestUpdate();
     }
 }

@@ -3,15 +3,15 @@ using Toybox.WatchUi;
 
 class TimeDrawable extends WatchUi.Drawable {
 
-	private var model;
+	private var viewModel;
 	private var x, y;
 
     function initialize(params) {
         Drawable.initialize(params);
     }
 
-	function onLayout(dc, model) {
-		self.model = model;
+	function onLayout(dc, viewModel) {
+		self.viewModel = viewModel;
 		self.x = dc.getWidth() / 2;
 		self.y = dc.getHeight() / 2;
 	}
@@ -25,14 +25,14 @@ class TimeDrawable extends WatchUi.Drawable {
                 hours = hours - 12;
             }
         } else {
-            if (model.useMilitaryTimeFormat) {
+            if (viewModel.useMilitaryTimeFormat) {
                 timeFormat = "$1$$2$";
                 hours = hours.format("%02d");
             }
         }
         var time = Lang.format(timeFormat, [hours, clockTime.min.format("%02d")]);
 	
-		dc.setColor(model.colorForeground, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(viewModel.colorForeground, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(x, y, Graphics.FONT_NUMBER_THAI_HOT, time, JUSTIFY_CENTER);
 	}
 	
