@@ -19,7 +19,24 @@ class List {
 	}
 	
 	function add(item) {
-		_size++;
+		incrementSize();
+		items[_size - 1] = item;
+	}
+	
+	function toArray() {
+		var array = new [_size];
+		for(var i = 0; i < _size; i++) {
+			array[i] = items[i];
+		}
+		return array;
+	}
+	
+	function sort(comparator) {
+		quickSort(items, 0, _size - 1, comparator);
+	}
+	
+	private function incrementSize() {
+		_size += 1;
 		if (_size > items.size()) {
 			var newItems = new [items.size() * 2];
 			for (var i = 0; i < items.size(); i++) {
@@ -27,11 +44,6 @@ class List {
 			}
 			items = newItems;
 		}
-		items[_size - 1] = item;
-	}
-	
-	function sort(comparator) {
-		quickSort(items, 0, _size - 1, comparator);
 	}
 	
 	private static function quickSort(items, low, high, comparator) {

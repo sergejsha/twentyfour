@@ -126,7 +126,7 @@ class TwentyfourViewModel {
 		var index2 = events.getNextEventIndexAfter(index1);
 		if (index2 > -1) {
 			var secondText = timeBetweenMomentsAsString(event.getMoment(), events.get(index2).getMoment());
-			text = text + "|" + secondText;
+			text = text + " | " + secondText;
 		}
 	
 		fields[Field.TYPE_TIME_TO_EVENT] = new Field(text);

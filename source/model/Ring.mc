@@ -103,7 +103,8 @@ module Ring {
 		function getNextEventIndexAfter(index) {
 			var index1 = (index + 1) % events.size();
 			var event1 = events[index1];
-			if (event1.getType() == Ring.Event.TYPE_NOW) {
+			if (event1.getType() == Ring.Event.TYPE_NOW
+				|| event1.getType() == Ring.Event.TYPE_MIDNIGHT) {
 				return -1;
 			}
 
@@ -131,75 +132,71 @@ module Ring {
 			
 			var times = sunCalc.getTimes(today, lat, lng, 0);
 			var noon = times[:solarNoon];
+			var sunrise = times[:sunrise];
+			var sunset = times[:sunset];
 			
-			var moments = new List(5);
-			moments.add({:moment => noon, :type => Event.TYPE_SOLAR_NOON});
-			moments.add({:moment => now, :type => Event.ARC_PASSED});
-			
-			// fixme: add times so that next events are visible
-			
-			var between0And3Hours = now.lessThan(today.add(THREE_HOURS));
-			if (between0And3Hours) {
-				moments.add({:moment => today, :type => Event.TYPE_MIDNIGHT});
-				var yesterday = today.subtract(ONE_DAY);
-				var timesYesterday = sunCalc.getTimes(yesterday, lat, lng, 0);
-				maybeAddMoment(moments, timesYesterday[:sunset], Event.TYPE_SUNSET);
-				maybeAddMoment(moments, times[:sunrise], Event.TYPE_SUNRISE);
-				
-			} else {
-				maybeAddMoment(moments, times[:sunset], Event.TYPE_SUNSET);
-				
-				var at21Hours = today.add(ONE_DAY).subtract(THREE_HOURS);
-				var between21and24Hours = now.greaterThan(at21Hours);
-				if (between21and24Hours) {
-					var tomorrow = today.add(ONE_DAY);
-					moments.add({:moment => tomorrow, :type => Event.TYPE_MIDNIGHT});
-					var timesTomorrow = sunCalc.getTimes(tomorrow, lat, lng, 0);
-					maybeAddMoment(moments, timesTomorrow[:sunrise], Event.TYPE_SUNRISE);
+			var events = new List(5);
+			if (now.lessThan(noon)) { // before noon
+				if (sunrise == null) { // no sunrise
+					// todo
+					
+				} else if (now.lessThan(sunrise)) {
+					// before sunrise
+					events.add(new Event(today, Event.TYPE_MIDNIGHT, Event.ARC_PASSED));
+					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_NIGHT));
+					events.add(new Event(sunrise, Event.TYPE_SUNRISE, Event.ARC_DAY));
+					events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_DAY));
+					if (sunset != null) {
+						events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_PASSED));
+					}
 					
 				} else {
-					moments.add({:moment => today, :type => Event.TYPE_MIDNIGHT});
-					maybeAddMoment(moments, times[:sunrise], Event.TYPE_SUNRISE);
+					// after sunrise
+					events.add(new Event(today, Event.TYPE_MIDNIGHT, Event.ARC_PASSED));
+					events.add(new Event(sunrise, Event.TYPE_SUNRISE, Event.ARC_PASSED));
+					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_DAY));
+					events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_DAY));
+					if (sunset != null) {
+						events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_NIGHT));
+					}
 				}
-			}
-			
-			moments.sort(comparator.method(:compareEvents));
-			
-			var event, moment, momentInfo, type, eventValue;
-			var events = new [moments.size()];
-			for (var i = 0; i < moments.size(); i++) {
-				event = moments.get(i);
-				moment = event[:moment];
-				type = event[:type];
-				eventValue = moment.value();
 				
-				if (eventValue < now.value()) {
-					events[i] = new Event(moment, type, Event.ARC_PASSED);
-				} else if (eventValue == now.value()) {
-					var next = moments.get((i + 1) % moments.size());
-					events[i] = new Event(moment, type, getArcType(next[:type]));
-				} else {
-					var next = moments.get((i + 1) % moments.size());
-					events[i] = new Event(moment, type, getArcType(next[:type]));
+			} else { // after noon
+				var tomorrow = today.add(ONE_DAY);
+				if (sunset == null) { // no sunset
+					// todo
+					
+				} else if (now.lessThan(sunset)) {
+					// before sunset
+					events.add(new Event(tomorrow, Event.TYPE_MIDNIGHT, Event.ARC_PASSED));
+					if (sunrise != null) {
+						events.add(new Event(sunrise, Event.TYPE_SUNRISE, Event.ARC_PASSED));
+					}
+					events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_PASSED));
+					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_DAY));
+					events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_NIGHT));
+				
+				} else { 
+					// after sunset
+					var tomorrowTimes = sunCalc.getTimes(tomorrow, lat, lng, 0);
+					var tomorrowSunrise = tomorrowTimes[:sunrise];
+			
+					events.add(new Event(tomorrow, Event.TYPE_MIDNIGHT, Event.ARC_NIGHT));
+					if (tomorrowSunrise != null) {
+						events.add(new Event(tomorrowSunrise, Event.TYPE_SUNRISE, Event.ARC_PASSED));
+					}
+					events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_PASSED));
+					events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_PASSED));
+					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_NIGHT));
 				}
 			}
 			
-			return new Ring.Events(events, now.value(), lat, lng);
+			return new Ring.Events(events.toArray(), now.value(), lat, lng);
 		}
 		
 		private static function maybeAddMoment(moments, moment, type) {
 			if (moment instanceof Time.Moment && moment.value() > 0) {
 				moments.add({:moment => moment, :type => type});
-			}
-		}
-		
-		private static function getArcType(eventType) {
-			if (eventType == Event.TYPE_SOLAR_NOON 
-				|| eventType == Event.TYPE_SUNSET 
-				|| eventType == Event.TYPE_SOLAR_NOON) {
-				return Event.ARC_DAY;
-			} else {
-				return Event.ARC_NIGHT;
 			}
 		}
 		

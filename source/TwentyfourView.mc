@@ -1,7 +1,7 @@
-using Toybox.WatchUi;
-using Toybox.System;
-using Toybox.Lang;
 using Toybox.Application;
+using Toybox.Lang;
+using Toybox.System;
+using Toybox.WatchUi;
 
 class TwentyfourView extends WatchUi.WatchFace {
 

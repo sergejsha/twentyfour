@@ -1,5 +1,5 @@
-using Toybox.WatchUi;
 using Toybox.Graphics;
+using Toybox.WatchUi;
 
 class TwentyfourDrawable extends WatchUi.Drawable {
 

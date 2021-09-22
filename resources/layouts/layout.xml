@@ -1,13 +1,15 @@
-<layout id="WatchFace">
-	<drawable class="TwentyfourBackground" />
-	<drawable id="TimeDrawable" class="TimeDrawable" />
-	<drawable id="FieldDrawableTopCenter" class="FieldDrawable">
-		<param name="compartment">4</param>
-		<param name="type">2</param>
-	</drawable>
-	<drawable id="FieldDrawableBottomCenter" class="FieldDrawable">
-		<param name="compartment">5</param>
-		<param name="type">1</param>
-	</drawable>
-	<drawable id="TwentyfourDrawable" class="TwentyfourDrawable" />
-</layout>
+<resources>
+	<layout id="WatchFace">
+		<drawable class="TwentyfourBackground" />
+		<drawable id="TimeDrawable" class="TimeDrawable" />
+		<drawable id="FieldDrawableTopCenter" class="FieldDrawable">
+			<param name="compartment">4</param>
+			<param name="type">2</param>
+		</drawable>
+		<drawable id="FieldDrawableBottomCenter" class="FieldDrawable">
+			<param name="compartment">5</param>
+			<param name="type">1</param>
+		</drawable>
+		<drawable id="TwentyfourDrawable" class="TwentyfourDrawable" />
+	</layout>
+</resources>
