@@ -14,12 +14,12 @@ class TwentyfourViewModel {
 	var events = new Ring.EmptyEvents();
 	
 	private var waitingForPosition = false;
-	private var positionRadians = null;
+	private var positionDegrees = null;
 
 	function initialize() {
 		var positionInfo = Position.getInfo();
         if (isPositionReliable(positionInfo)) {
-	        setPositionRadians(positionInfo);
+	        setPositionDegrees(positionInfo);
 	        
         } else {
 	        waitingForPosition = true;
@@ -38,7 +38,7 @@ class TwentyfourViewModel {
 
 	function onPositionUpdated(positionInfo) {
 		if (!waitingForPosition || !isPositionReliable(positionInfo)) {
-			positionRadians = null;
+			positionDegrees = null;
 			return;
 		}
 	
@@ -48,7 +48,7 @@ class TwentyfourViewModel {
 			method(:onPositionUpdated)
 		);
 		
-		setPositionRadians(positionInfo);
+		setPositionDegrees(positionInfo);
 	}
 
 	function onUpdate() {
@@ -65,12 +65,12 @@ class TwentyfourViewModel {
 	}
 
 	private function updateHorizon(now, today) {
-		if (positionRadians == null) {
+		if (positionDegrees == null) {
 			return;
 		}
 	
-		var lat = positionRadians[0];
-		var lng = positionRadians[1];
+		var lat = positionDegrees[0];
+		var lng = positionDegrees[1];
 
 		if (events.isOutdated(now, lat, lng)) {
 			events = Ring.Events.create(now, today, lat, lng);
@@ -82,9 +82,8 @@ class TwentyfourViewModel {
 			positionInfo.accuracy != Position.QUALITY_NOT_AVAILABLE;
 	}
 
-	private function setPositionRadians(positionInfo) {
-		//positionRadians = positionInfo.position.toRadians();
-		positionRadians = positionInfo.position.toDegrees();
+	private function setPositionDegrees(positionInfo) {
+		positionDegrees = positionInfo.position.toDegrees();
 	}
 
 	private function updatePosition() {	
@@ -93,7 +92,7 @@ class TwentyfourViewModel {
 		}
 		var positionInfo = Position.getInfo();
         if (isPositionReliable(positionInfo)) {
-	        setPositionRadians(positionInfo);
+	        setPositionDegrees(positionInfo);
 		}
 	}
 	
