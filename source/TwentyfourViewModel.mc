@@ -56,11 +56,8 @@ class TwentyfourViewModel {
 		var today = Time.today();
 		var now = Time.now();
 
-		// fixme: update screen once per minute
-	
 		updatePosition();
 		updateHorizon(now, today);	
-		updateTimeToEventField(now, today);
 		updateBatteryField();
 	}
 
@@ -72,8 +69,9 @@ class TwentyfourViewModel {
 		var lat = positionDegrees[0];
 		var lng = positionDegrees[1];
 
-		if (events.isOutdated(now, lat, lng)) {
+		if (events.isUpdateReqiured(now, lat, lng)) {
 			events = Ring.Events.create(now, today, lat, lng);
+			updateTimeToEventField(now, today);
 		}
 	}
 
@@ -101,34 +99,18 @@ class TwentyfourViewModel {
 		fields[Field.TYPE_BATTERY] = new Field(value + "%");
 	}
 	
-	private static function timeBetweenMomentsAsString(from, to) {
-		var totalMinutes = to.subtract(from).value() / 60;
-		var hours = totalMinutes / 60;
-		var minutes = totalMinutes.toLong() % 60;
-		return hours.format("%d") + ":" + minutes.format("%02d");
-	}
-	
 	private function updateTimeToEventField(now, today) {
-		var index = events.getNowIndex();
-		if (index < 0) {
-			fields[Field.TYPE_TIME_TO_EVENT] = null;
-			return;
-		}
-	
-		var index1 = events.getNextEventIndexAfter(index);
-		if (index1 < 0) {
-			fields[Field.TYPE_TIME_TO_EVENT] = null;
-			return;
-		}
+		var text = events.getText1();
+		var text2 = events.getText2();
 
-		var event = events.get(index);
-		var text = timeBetweenMomentsAsString(event.getMoment(), events.get(index1).getMoment());
-		var index2 = events.getNextEventIndexAfter(index1);
-		if (index2 > -1) {
-			var secondText = timeBetweenMomentsAsString(event.getMoment(), events.get(index2).getMoment());
-			text = text + " | " + secondText;
-		}
+		if (text == null) {
+			fields[Field.TYPE_TIME_TO_EVENT] = null;
+			return;
+		}	
 	
+		if (text2 != null) {
+			text = text + " | " + text2;
+		}
 		fields[Field.TYPE_TIME_TO_EVENT] = new Field(text);
 	}
 	
@@ -136,39 +118,5 @@ class TwentyfourViewModel {
 		return new Ring.Event(moment, Time.Gregorian.info(moment, Time.FORMAT_SHORT), type, arc);
 	}
 	
-	private static function momentToDegrees(moment) {
-		var info = Time.Gregorian.info(moment, Time.FORMAT_SHORT);
-		var minutesInDay = 24 * 60;
-		var minutes = (info.hour * 60 + info.min) % minutesInDay;
-		return 90.0 - 360.0 / minutesInDay * minutes;
-	}
-	
 	private static const FORMAT_FLOAT = "%2.0d";
-}
-
-class Field {
-	enum {
-		COMPARTMENT_TOP_LEFT, 
-		COMPARTMENT_TOP_RIGHT, 
-		COMPARTMENT_BOTTOM_RIGHT, 
-		COMPARTMENT_BOTTOM_LEFT,
-		COMPARTMENT_TOP_CENTER,
-		COMPARTMENT_BOTTOM_CENTER
-	}
-
-	enum {
-		TYPE_NONE, 
-		TYPE_TIME_TO_EVENT, 
-		TYPE_BATTERY
-	}
-
-	private var value;
-	
-	function initialize(value) {
-		self.value = value;
-	}
-	
-	function getValue() {
-		return value;
-	}
 }
