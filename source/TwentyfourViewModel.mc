@@ -83,7 +83,8 @@ class TwentyfourViewModel {
 	}
 
 	private function setPositionRadians(positionInfo) {
-		positionRadians = positionInfo.position.toRadians();
+		//positionRadians = positionInfo.position.toRadians();
+		positionRadians = positionInfo.position.toDegrees();
 	}
 
 	private function updatePosition() {	

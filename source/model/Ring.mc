@@ -128,6 +128,13 @@ module Ring {
 			return (now.value() - self.sec).abs() > 60 || self.lat != lat || self.lng != lng;
 		}
 		
+		private static function isPolarDay(moment, lat) {
+			var north = lat > 0;
+			var info = Time.Gregorian.info(moment, Time.FORMAT_SHORT);
+			var summer = info.month > 4 && info.month < 10;
+			return (north && summer) || (!north && !summer);
+		}
+		
 		static function create(now, today, lat, lng) {
 			
 			var times = sunCalc.getTimes(today, lat, lng, 0);
@@ -136,68 +143,92 @@ module Ring {
 			var sunset = times[:sunset];
 			
 			var events = new List(5);
-			if (now.lessThan(noon)) { // before noon
-				if (sunrise == null) { // no sunrise
-					// todo
+			if (sunrise == null || sunset == null) {
+				if (isPolarDay(now, lat)) {
+					if (DEBUG) {
+						System.println("polar day");
+					}
+					events.add(new Event(today, Event.TYPE_MIDNIGHT, Event.ARC_DAY));
+					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_DAY));
 					
-				} else if (now.lessThan(sunrise)) {
-					// before sunrise
+				} else {
+					if (DEBUG) {
+						System.println("polar night");
+					}
+					events.add(new Event(today, Event.TYPE_MIDNIGHT, Event.ARC_NIGHT));
+					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_NIGHT));
+				}
+				
+			} else if (now.lessThan(noon)) { // before noon 
+				if (now.lessThan(sunrise)) {
+					if (DEBUG) {
+						System.println("before sunrise");
+					}
 					events.add(new Event(today, Event.TYPE_MIDNIGHT, Event.ARC_PASSED));
 					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_NIGHT));
 					events.add(new Event(sunrise, Event.TYPE_SUNRISE, Event.ARC_DAY));
 					events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_DAY));
-					if (sunset != null) {
-						events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_PASSED));
-					}
+					events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_PASSED));
 					
 				} else {
-					// after sunrise
+					if (DEBUG) {
+						System.println("after sunrise");
+					}
 					events.add(new Event(today, Event.TYPE_MIDNIGHT, Event.ARC_PASSED));
 					events.add(new Event(sunrise, Event.TYPE_SUNRISE, Event.ARC_PASSED));
 					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_DAY));
 					events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_DAY));
-					if (sunset != null) {
-						events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_NIGHT));
-					}
+					events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_NIGHT));
 				}
 				
 			} else { // after noon
 				var tomorrow = today.add(ONE_DAY);
-				if (sunset == null) { // no sunset
-					// todo
-					
-				} else if (now.lessThan(sunset)) {
-					// before sunset
-					events.add(new Event(tomorrow, Event.TYPE_MIDNIGHT, Event.ARC_PASSED));
-					if (sunrise != null) {
-						events.add(new Event(sunrise, Event.TYPE_SUNRISE, Event.ARC_PASSED));
+				if (now.lessThan(sunset)) {
+					if (DEBUG) {
+						System.println("before sunset");
 					}
+					events.add(new Event(tomorrow, Event.TYPE_MIDNIGHT, Event.ARC_PASSED));
+					events.add(new Event(sunrise, Event.TYPE_SUNRISE, Event.ARC_PASSED));
 					events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_PASSED));
 					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_DAY));
 					events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_NIGHT));
 				
 				} else { 
-					// after sunset
+					if (DEBUG) {
+						System.println("after sunset");
+					}
+				
 					var tomorrowTimes = sunCalc.getTimes(tomorrow, lat, lng, 0);
 					var tomorrowSunrise = tomorrowTimes[:sunrise];
 			
-					events.add(new Event(tomorrow, Event.TYPE_MIDNIGHT, Event.ARC_NIGHT));
-					if (tomorrowSunrise != null) {
+					if (tomorrowSunrise == null) {
+						if (isPolarDay(tomorrow, lat)) {
+							if (DEBUG) {
+								System.println("going into polar day");
+							}
+							events.add(new Event(tomorrow, Event.TYPE_MIDNIGHT, Event.ARC_DAY));
+							
+						} else {
+							if (DEBUG) {
+								System.println("going into polar night");
+							}
+							events.add(new Event(tomorrow, Event.TYPE_MIDNIGHT, Event.ARC_NIGHT));
+						}
+						events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_PASSED));
+						events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_PASSED));
+						events.add(new Event(now, Event.TYPE_NOW, Event.ARC_NIGHT));
+						
+					} else {
+						events.add(new Event(tomorrow, Event.TYPE_MIDNIGHT, Event.ARC_NIGHT));
 						events.add(new Event(tomorrowSunrise, Event.TYPE_SUNRISE, Event.ARC_PASSED));
+						events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_PASSED));
+						events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_PASSED));
+						events.add(new Event(now, Event.TYPE_NOW, Event.ARC_NIGHT));
 					}
-					events.add(new Event(noon, Event.TYPE_SOLAR_NOON, Event.ARC_PASSED));
-					events.add(new Event(sunset, Event.TYPE_SUNSET, Event.ARC_PASSED));
-					events.add(new Event(now, Event.TYPE_NOW, Event.ARC_NIGHT));
 				}
 			}
 			
 			return new Ring.Events(events.toArray(), now.value(), lat, lng);
-		}
-		
-		private static function maybeAddMoment(moments, moment, type) {
-			if (moment instanceof Time.Moment && moment.value() > 0) {
-				moments.add({:moment => moment, :type => type});
-			}
 		}
 		
 		private static const ONE_DAY = new Time.Duration(Time.Gregorian.SECONDS_PER_DAY);
@@ -205,6 +236,7 @@ module Ring {
 		
 		private static const comparator = new Comparator();
 		private static const sunCalc = new SunCalc();
+		private static const DEBUG = false;
 	}
 	
 	class EmptyEvents {

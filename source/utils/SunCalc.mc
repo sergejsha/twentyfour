@@ -23,7 +23,11 @@ class SunCalc {
 	}
 	
 	private static function fromJulian(j) {
-		return new Time.Moment(((j + 0.5 - J1970) * daySec).toNumber());
+		if (j*1 != j) { // NaN
+			return null;
+		} else {
+			return new Time.Moment(((j + 0.5 - J1970) * daySec).toNumber());
+		}
 	}
 	
 	private static function toDays(moment) { 
@@ -175,7 +179,7 @@ class SunCalc {
 	        
 	        Jset = getSetJ(h0, lw, phi, dec, n, M, L);
 	        Jrise = Jnoon - (Jset - Jnoon);
-	
+
 	        result[time[1]] = fromJulian(Jrise);
 	        result[time[2]] = fromJulian(Jset);
 	    }
