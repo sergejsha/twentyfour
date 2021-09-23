@@ -1,5 +1,5 @@
 # ⌚️ Twentyfour
-Face for Garmin watches with Sunrise and Sunset indication.
+Watch face for Garmin watches with Sunrise and Sunset indication.
 
 <img src="https://github.com/beworker/twentyfour/blob/master/design/features.png" />
 
