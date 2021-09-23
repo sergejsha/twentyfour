@@ -1,5 +1,3 @@
-using Toybox.Lang;
-
 class List {
 	
 	private var items;

@@ -1,4 +1,14 @@
 class Field {
+	private var value;
+	
+	function initialize(value) {
+		self.value = value;
+	}
+	
+	function getValue() {
+		return value;
+	}
+	
 	enum {
 		COMPARTMENT_TOP_LEFT, 
 		COMPARTMENT_TOP_RIGHT, 
@@ -12,15 +22,5 @@ class Field {
 		TYPE_NONE, 
 		TYPE_TIME_TO_EVENT, 
 		TYPE_BATTERY
-	}
-
-	private var value;
-	
-	function initialize(value) {
-		self.value = value;
-	}
-	
-	function getValue() {
-		return value;
 	}
 }

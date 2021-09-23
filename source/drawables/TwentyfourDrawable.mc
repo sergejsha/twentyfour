@@ -56,7 +56,7 @@ class TwentyfourDrawable extends WatchUi.Drawable {
 	
 	private function drawEvent(dc, event) {
 		var degree = timeToDegrees(event.getMomentInfo());
-		if (event.getType() == Ring.Event.TYPE_NOW) {
+		if (event.getType() == Event.TYPE_NOW) {
 			drawDotWithBorder(dc, degree, ARC_HALF_WIDTH);
 		} else {
 			drawHatchWithBorder(dc, degree, HATCH_WIDTH, HATCH_HEIGHT);
@@ -121,9 +121,9 @@ class TwentyfourDrawable extends WatchUi.Drawable {
 	private static function getColor(event) {
 		var arc = event.getArcType(); 
 		switch (arc) {
-			case Ring.Event.ARC_PASSED: return Graphics.COLOR_DK_GRAY;
-			case Ring.Event.ARC_DAY: return Graphics.COLOR_ORANGE;
-			case Ring.Event.ARC_NIGHT: return Graphics.COLOR_DK_BLUE;
+			case Event.ARC_PASSED: return Graphics.COLOR_DK_GRAY;
+			case Event.ARC_DAY: return Graphics.COLOR_ORANGE;
+			case Event.ARC_NIGHT: return Graphics.COLOR_DK_BLUE;
 			default: return Graphics.COLOR_LT_GRAY;
 		}
 	}
@@ -131,9 +131,9 @@ class TwentyfourDrawable extends WatchUi.Drawable {
 	private static function getEventIcon(event) {
 		var arc = event.getType(); 
 		switch (arc) {
-			case Ring.Event.TYPE_SUNRISE: return "B";
-			case Ring.Event.TYPE_SOLAR_NOON: return "A";
-			case Ring.Event.TYPE_SUNSET: return "C";
+			case Event.TYPE_SUNRISE: return "B";
+			case Event.TYPE_SOLAR_NOON: return "A";
+			case Event.TYPE_SUNSET: return "C";
 			default: return null;
 		}
 	}
