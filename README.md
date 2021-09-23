@@ -5,10 +5,10 @@ Face for Garmin watches with Sunrise and Sunset indication.
 
 # Download
 
-The project has pre-built binaries for
-* [Garmin Fenix 5x plus](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5xplus)
+The project contains pre-built binaries for
+* [Garmin Fenix 5X plus](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5xplus)
 
-You can install it to your Garmin watch by donwloading release or debug version of the binaries and copying it to the `GARMIN/Apps` folder of your watch via USB.
+You can install it to your Garmin watch by donwloading a release or a debug version of the binaries and copying it into the `GARMIN/Apps` folder of your Garmin watch via USB.
 
 # License
 ```
