@@ -13,5 +13,5 @@ You are free to
 
 You may not 
   - use the material for commercial purposes;
-  - publish the material to Garmin COnnect IQ store or any other application stores.
+  - publish the material to Garmin Connect IQ store or any other application stores.
 ```
