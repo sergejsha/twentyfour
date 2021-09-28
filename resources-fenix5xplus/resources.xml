@@ -1,0 +1,4 @@
+<resources>
+	<string id="timeFontSize">HUGE</string>
+	<string id="timeVerticalPadding">46</string>
+</resources>

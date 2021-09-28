@@ -9,6 +9,7 @@ class FieldDrawable extends WatchUi.Drawable {
 	private var viewModel;
 	private var x, y;
 	private var justification;
+	private var paddingY;
 
     function initialize(params) {
         Drawable.initialize(params);
@@ -18,6 +19,7 @@ class FieldDrawable extends WatchUi.Drawable {
 
 	function onLayout(dc, viewModel) {
 		self.viewModel = viewModel;
+		paddingY = viewModel.timeVerticalPadding;
 
 		var cx = dc.getWidth() / 2;
 		var cy = dc.getHeight() / 2;
@@ -25,37 +27,37 @@ class FieldDrawable extends WatchUi.Drawable {
 		switch(compartment) {
 			case Field.COMPARTMENT_TOP_LEFT:
 				x = cx - DX;
-				y = cy - DY;
+				y = cy - paddingY;
 				justification = Graphics.TEXT_JUSTIFY_RIGHT;
 				break;
 			
 			case Field.COMPARTMENT_TOP_RIGHT:
 				x = cx + DX;
-				y = cy - DY;
+				y = cy - paddingY;
 				justification = Graphics.TEXT_JUSTIFY_LEFT;
 				break;
 				
 			case Field.COMPARTMENT_BOTTOM_RIGHT:
 				x = cx + DX;
-				y = cy + DY;
+				y = cy + paddingY;
 				justification = Graphics.TEXT_JUSTIFY_LEFT;
 				break;
 			
 			case Field.COMPARTMENT_BOTTOM_LEFT:
 				x = cx - DX;
-				y = cy + DY;
+				y = cy + paddingY;
 				justification = Graphics.TEXT_JUSTIFY_RIGHT;
 				break;
 				
 			case Field.COMPARTMENT_TOP_CENTER:
 				x = cx;
-				y = cy - DY;
+				y = cy - paddingY;
 				justification = Graphics.TEXT_JUSTIFY_CENTER;
 				break;
 				
 			case Field.COMPARTMENT_BOTTOM_CENTER:
 				x = cx;
-				y = cy + DY;
+				y = cy + paddingY;
 				justification = Graphics.TEXT_JUSTIFY_CENTER;
 				break;
 		}
@@ -76,5 +78,4 @@ class FieldDrawable extends WatchUi.Drawable {
 	}
 	
 	private const DX = 11;
-	private const DY = 46;
 }

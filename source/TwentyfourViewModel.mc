@@ -1,14 +1,18 @@
 using Toybox.Application;
+using Toybox.Graphics;
+using Toybox.Lang;
 using Toybox.Position;
 using Toybox.System;
 using Toybox.Time;
-using Toybox.Lang;
+using Toybox.WatchUi;
 
 class TwentyfourViewModel {
 
 	var colorForeground;
 	var colorBackground;
 	var useMilitaryTimeFormat;
+	var timeFontSize;
+	var timeVerticalPadding;
 
 	var fields = {};
 	var events = new EmptyEvents();
@@ -17,6 +21,8 @@ class TwentyfourViewModel {
 	private var positionDegrees = null;
 
 	function initialize() {
+		initalizeResources();
+	
 		var positionInfo = Position.getInfo();
         if (isPositionReliable(positionInfo)) {
 	        setPositionDegrees(positionInfo);
@@ -234,6 +240,13 @@ class TwentyfourViewModel {
 		
 		return new Events(events.toArray(), now.value(), lat, lng, text1, text2);
 	}
+
+	private function initalizeResources() {
+		self.timeFontSize = WatchUi.loadResource(Rez.Strings.timeFontSize).equals(FONT_SIZE_HUGE) ? Graphics.FONT_NUMBER_THAI_HOT : Graphics.FONT_NUMBER_HOT; 
+		self.timeVerticalPadding = WatchUi.loadResource(Rez.Strings.timeVerticalPadding).toNumber();
+	}
+
+	private static const FONT_SIZE_HUGE = "HUGE";
 
 	private static const sunCalc = new SunCalc();
 	private static const FORMAT_FLOAT = "%2.0d";

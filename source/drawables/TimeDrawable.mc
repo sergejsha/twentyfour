@@ -33,7 +33,7 @@ class TimeDrawable extends WatchUi.Drawable {
         var time = Lang.format(timeFormat, [hours, clockTime.min.format("%02d")]);
 	
 		dc.setColor(viewModel.colorForeground, Graphics.COLOR_TRANSPARENT);
-		dc.drawText(x, y, Graphics.FONT_NUMBER_THAI_HOT, time, JUSTIFY_CENTER);
+		dc.drawText(x, y, viewModel.timeFontSize, time, JUSTIFY_CENTER);
 	}
 	
 	private const JUSTIFY_CENTER = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
