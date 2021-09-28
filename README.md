@@ -3,10 +3,19 @@ Watch face for Garmin watches with Sunrise and Sunset indication.
 
 <img src="https://github.com/beworker/twentyfour/blob/master/design/features.png" />
 
-# Download
+# Installation
 
-The project contains pre-built binaries for
-* [Garmin Fenix 5X plus](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5xplus)
+The project contains ready to install binaries for
+* [Fenix 5](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5)
+* [Fenix 5 Plus](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5plus)
+* [Fenix 5S](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5s)
+* [Fenix 5S Plus](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5splus)
+* [Fenix 5X](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5x)
+* [Fenix 5X Plus](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5xplus)
+* [Fenix 6](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6)
+* [Fenix 6S](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6s)
+* [Fenix 6S Pro](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6spro)
+* [Fenix 6X Pro](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6xpro)
 
 You can install the watch face to your Garmin watch by donwloading a release or a debug version of the binaries and copying it into the `GARMIN/Apps` folder of your Garmin watch via USB.
 
