@@ -13,6 +13,7 @@ The project contains ready to install binaries for
 * [Fenix 5X](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5x)
 * [Fenix 5X Plus](https://github.com/beworker/twentyfour/blob/master/binaries/fenix5xplus)
 * [Fenix 6](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6)
+* [Fenix 6 Pro](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6pro)
 * [Fenix 6S](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6s)
 * [Fenix 6S Pro](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6spro)
 * [Fenix 6X Pro](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6xpro)
