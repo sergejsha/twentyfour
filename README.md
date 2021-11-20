@@ -20,6 +20,11 @@ The project contains ready to install binaries for
 
 You can install the watch face to your Garmin watch by donwloading a release or a debug version of the binaries and copying it into the `GARMIN/Apps` folder of your Garmin watch via USB.
 
+# Release
+
+0.1.0 (20.11.2021) Fixed crash on watch face launch
+0.0.1 Initial release
+
 # License
 ```
 Copyright 2021 Sergej Shafarenka, www.halfbit.de
