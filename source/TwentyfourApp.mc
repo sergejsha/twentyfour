@@ -8,7 +8,6 @@ class TwentyfourApp extends Application.AppBase {
     function initialize() {
         AppBase.initialize();
         viewModel = new TwentyfourViewModel();
-        viewModel.updateProperties(self);
     }
 
     // onStart() is called on application start up
@@ -24,7 +23,7 @@ class TwentyfourApp extends Application.AppBase {
 
     // New app settings have been received so trigger a UI update
     function onSettingsChanged() {
-    	viewModel.updateProperties(self);
+    	viewModel.onPropertiesChanged();
         WatchUi.requestUpdate();
     }
 }

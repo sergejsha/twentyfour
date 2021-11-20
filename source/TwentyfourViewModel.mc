@@ -1,12 +1,13 @@
 using Toybox.Application;
 using Toybox.Graphics;
 using Toybox.Lang;
-using Toybox.Position;
 using Toybox.System;
 using Toybox.Time;
 using Toybox.WatchUi;
 
 class TwentyfourViewModel {
+
+	// interface (you're so "cool" monkey c)
 
 	var colorForeground;
 	var colorBackground;
@@ -17,87 +18,84 @@ class TwentyfourViewModel {
 	var fields = {};
 	var events = new EmptyEvents();
 	
-	private var waitingForPosition = false;
-	private var positionDegrees = null;
+	// implementation
+	
+	private var app;
+	private var locationDegrees = null;
 
+	// constructor (self reminder)
 	function initialize() {
-		initalizeResources();
-	
-		var positionInfo = Position.getInfo();
-        if (isPositionReliable(positionInfo)) {
-	        setPositionDegrees(positionInfo);
-	        
-        } else {
-	        waitingForPosition = true;
-            Position.enableLocationEvents(
-            	Position.LOCATION_CONTINUOUS,
-            	method(:onPositionUpdated)
-            );
-        }
+		app = Application.getApp();
+		initializeResources();
+		initializeFromAppProperties();
 	}
 
-	function updateProperties(app) {
-	    colorForeground = app.getProperty("ForegroundColor");
-	    colorBackground = app.getProperty("BackgroundColor");
-	    useMilitaryTimeFormat = app.getProperty("UseMilitaryFormat");
-	}
-
-	function onPositionUpdated(positionInfo) {
-		if (!waitingForPosition || !isPositionReliable(positionInfo)) {
-			positionDegrees = null;
-			return;
-		}
-	
-		waitingForPosition = false;
-		Position.enableLocationEvents(
-			Position.LOCATION_DISABLE, 
-			method(:onPositionUpdated)
-		);
-		
-		setPositionDegrees(positionInfo);
+	function onPropertiesChanged() {
+		initializeFromAppProperties();
 	}
 
 	function onUpdate() {
-	
-		var today = Time.today();
-		var now = Time.now();
-
-		updatePosition();
-		updateHorizon(now, today);	
+		updateLocation();
+		updateHorizon(Time.now(), Time.today());	
 		updateBatteryField();
 	}
 
+	private function initializeFromAppProperties() {
+	    colorForeground = app.getProperty("ForegroundColor");
+	    colorBackground = app.getProperty("BackgroundColor");
+	    useMilitaryTimeFormat = app.getProperty("UseMilitaryFormat");
+	    
+	    if (locationDegrees == null) {
+		    var lat = app.getProperty(LOCATION_LAT);
+		    var lng = app.getProperty(LOCATION_LNG);
+		    if (lat != null && lng != null) {
+		    	locationDegrees = new [2];
+		    	locationDegrees[0] = lat.toFloat();
+		    	locationDegrees[1] = lng.toFloat();
+		    }
+	    }
+	}
+
+	private function storeLocationToProperties(locationDegrees) {
+		app.setProperty(LOCATION_LAT, locationDegrees[0].toFloat());
+		app.setProperty(LOCATION_LNG, locationDegrees[1].toFloat());
+	}
+
+	private function initializeResources() {
+		timeVerticalPadding = 
+			WatchUi
+				.loadResource(Rez.Strings.timeVerticalPadding)
+				.toNumber();
+				
+		timeFontSize = 
+			WatchUi.loadResource(Rez.Strings.timeFontSize).equals(FONT_SIZE_HUGE) 
+				? Graphics.FONT_NUMBER_THAI_HOT 
+				: Graphics.FONT_NUMBER_HOT;
+	} 
+
 	private function updateHorizon(now, today) {
-		if (positionDegrees == null) {
+		if (locationDegrees == null) {
 			return;
 		}
 	
-		var lat = positionDegrees[0];
-		var lng = positionDegrees[1];
-
+		var lat = locationDegrees[0];
+		var lng = locationDegrees[1];
+		
 		if (events.isUpdateReqiured(now, lat, lng)) {
 			events = createEvents(now, today, lat, lng);
 			updateTimeToEventField(now, today);
+			storeLocationToProperties(locationDegrees);
 		}
 	}
 
-	private function isPositionReliable(positionInfo) {
-		return positionInfo != null && 
-			positionInfo.accuracy != Position.QUALITY_NOT_AVAILABLE;
-	}
-
-	private function setPositionDegrees(positionInfo) {
-		positionDegrees = positionInfo.position.toDegrees();
-	}
-
-	private function updatePosition() {	
-		if (waitingForPosition) {
-			return;
-		}
-		var positionInfo = Position.getInfo();
-        if (isPositionReliable(positionInfo)) {
-	        setPositionDegrees(positionInfo);
-		}
+	private function updateLocation() {
+        var activitInfo = Activity.getActivityInfo();
+        if (activitInfo != null) {
+	        var location =  activitInfo.currentLocation;
+	        if (location != null) {
+	        	locationDegrees = location.toDegrees();
+	        }
+        }
 	}
 	
 	private function updateBatteryField() {
@@ -241,12 +239,9 @@ class TwentyfourViewModel {
 		return new Events(events.toArray(), now.value(), lat, lng, text1, text2);
 	}
 
-	private function initalizeResources() {
-		self.timeFontSize = WatchUi.loadResource(Rez.Strings.timeFontSize).equals(FONT_SIZE_HUGE) ? Graphics.FONT_NUMBER_THAI_HOT : Graphics.FONT_NUMBER_HOT; 
-		self.timeVerticalPadding = WatchUi.loadResource(Rez.Strings.timeVerticalPadding).toNumber();
-	}
-
 	private static const FONT_SIZE_HUGE = "HUGE";
+	private static const LOCATION_LAT = "LocationLat";
+	private static const LOCATION_LNG = "LocationLng";
 
 	private static const sunCalc = new SunCalc();
 	private static const FORMAT_FLOAT = "%2.0d";
