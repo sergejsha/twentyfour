@@ -1,6 +1,8 @@
 # ⌚️ Twentyfour
 Watch face for Garmin watches with Sunrise and Sunset indication.
 
+On the first launch, if you don't see the solar events, make sure to launch an activity (e.g. Run), so that the watch face can receive a GPS location update and calculate solar events for your location.
+
 <img src="https://github.com/beworker/twentyfour/blob/master/design/features.png" />
 
 # Installation
