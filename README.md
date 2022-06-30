@@ -24,7 +24,7 @@ You can install the watch face to your Garmin watch by donwloading a release or 
 
 # Release
 
-- 0.1.0 (20.11.2021) Fixed crash on watch face launch
+- 0.1.0 (20.11.2021) Fixed a sporadic crash on watch face launch
 - 0.0.1 Initial release
 
 # License
