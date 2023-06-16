@@ -29,16 +29,18 @@ You can install the watch face to your Garmin watch by donwloading a release or 
 
 # License
 ```
-Copyright 2021 Sergej Shafarenka, www.halfbit.de
+Copyright 2021-2023 Sergej Shafarenka, www.halfbit.de
 
 You are free to
   - copy and redistribute the material in any medium or format;
   - remix, transform, and build upon the material.
 
-You may not 
-  - use the material for commercial purposes;
-  - publish the material to Garmin Connect IQ store or any other application store.
+You may not
+  - use the material or its derivative for commercial purposes;
+  - publish the material or its derivative to Garmin Connect IQ store or any other application store.
 
 The material is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
 OR CONDITIONS OF ANY KIND, either express or implied.
+
+Contact the developer if you want to use the material under a different license.
 ```
