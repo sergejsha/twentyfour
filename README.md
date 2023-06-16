@@ -1,5 +1,5 @@
 # ⌚️ Twentyfour
-Concise watch face for Garmin smartwatches with immediate Sunrise and Sunset indication.
+Concise watch face for Garmin smartwatches with integrated Sunrise and Sunset indication.
 
 On the first launch, if you don't see the solar events, make sure to launch an activity (e.g. Run), so that the watch face can receive a GPS location update and calculate solar events for your location.
 
