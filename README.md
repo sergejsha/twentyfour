@@ -20,7 +20,7 @@ The project contains ready to install binaries for
 * [Fenix 6S Pro](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6spro)
 * [Fenix 6X Pro](https://github.com/beworker/twentyfour/blob/master/binaries/fenix6xpro)
 
-You can install the watch face to your Garmin watch by donwloading a release or a debug version of the binaries and copying it into the `GARMIN/Apps` folder of your Garmin watch via USB.
+You can install the watch face to your Garmin watch by downloading a release or a debug version of binaries and copying it to the `GARMIN/Apps` folder of your Garmin watch via USB.
 
 # Release
 
