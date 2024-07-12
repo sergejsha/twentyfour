@@ -1,3 +1,5 @@
+![maintenance-status](https://img.shields.io/badge/maintenance-passively--maintained-yellowgreen.svg)
+
 # ⌚️ Twentyfour
 Concise watch face for Garmin smartwatches with integrated Sunrise and Sunset indication.
 
